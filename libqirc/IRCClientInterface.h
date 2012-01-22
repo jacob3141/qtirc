@@ -23,53 +23,7 @@
 #include <QHostAddress>
 #include <QTextDocument>
 #include <QStringListModel>
-
-class IRCClientInterface;
-/**
-  * \class IRCChannelProxyInterface
-  * Interface for a handle to an IRC channel.
-  */
-class IRCChannelProxyInterface : public QObject
-{
-  Q_OBJECT
-public:
-  IRCChannelProxyInterface (IRCClientInterface *, const QString&, QObject *parent = 0) : QObject (parent) { }
-  virtual ~IRCChannelProxyInterface () { }
-
-  /** Returns the conversation model part. */
-  virtual QTextDocument *conversationModel () = 0;
-
-  /** Returns a string list model for the user list. */
-  virtual QStringListModel *userListModel () = 0;
-
-  /** Returns the name of this channel. */
-  virtual QString channelName () = 0;
-
-  /**
-    * Overwrites the current nick list by settings a new nick list.
-    * \arg nickList The new nick list to set.
-    */
-  virtual void setNickList (const QStringList& nickList) = 0;
-
-  /**
-    * Sends a public message onto this channel.
-    * \arg message The message that should be sent.
-    */
-  virtual void sendMessage (const QString& message) = 0;
-
-  /** Requests to join this channel. */
-  virtual void sendJoinRequest () = 0;
-
-  /**
-    * Requests to leave this channel.
-    * \arg reason Reason for leaving the channel.
-    */
-  virtual void leave (const QString& reason) = 0;
-
-public slots:
-  virtual void handleNickChange (const QString& oldNick, const QString& newNick) = 0;
-  virtual void handleJoin (const QString& nick) = 0;
-};
+#include "IRCChannelProxyInterface.h"
 
 /**
   * \class IRCClientInterface
