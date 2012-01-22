@@ -15,7 +15,9 @@ HEADERS += IRCClientImpl.h IRCClientInterface.h IRCCodes.h IRCWidget.h \
     IRCCommand.h \
     IRCReply.h \
     IRCError.h \
-    IRCChannelProxyImpl.h
+    IRCChannelProxyImpl.h \
+    ChatMessageTextEdit.h
 SOURCES += IRCClientImpl.cpp IRCWidget.cpp \
     IRCServerMessage.cpp \
-    IRCChannelProxyImpl.cpp
+    IRCChannelProxyImpl.cpp \
+    ChatMessageTextEdit.cpp

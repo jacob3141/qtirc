@@ -19,38 +19,9 @@
 #define IRCWIDGET_H
 
 #include <QWidget>
-#include <QPlainTextEdit>
 #include <QPushButton>
-#include <QLineEdit>
-#include <QCompleter>
 #include "IRCClientInterface.h"
-
-class ChatMessageTextEdit : public QPlainTextEdit
-{
-    Q_OBJECT
-public:
-    explicit ChatMessageTextEdit(QWidget *parent = 0);
-    ~ChatMessageTextEdit();
-
-    void setCompleter(QCompleter *m_completer);
-    QCompleter *completer() const;
-
-signals:
-    void sendMessage (const QString& message);
-
-protected:
-    void keyPressEvent(QKeyEvent *e);
-    void focusInEvent(QFocusEvent *e);
-
-private slots:
-    void insertCompletion(const QString &completion);
-
-private:
-    QString textUnderCursor() const;
-
-private:
-    QCompleter *m_completer;
-};
+#include "ChatMessageTextEdit.h"
 
 class IRCWidget : public QWidget
 {
