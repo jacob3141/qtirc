@@ -2,7 +2,7 @@
 QT += network gui
 
 TEMPLATE = lib
-TARGET = libqirc
+TARGET = qirc
 DEPENDPATH += .
 INCLUDEPATH += .
 

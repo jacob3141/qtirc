@@ -1,10 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2012-01-22T20:00:09
-#
-#-------------------------------------------------
-
-QT       += core gui
+QT       += core gui network
 
 TARGET = qirc
 TEMPLATE = app

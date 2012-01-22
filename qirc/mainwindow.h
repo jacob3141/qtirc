@@ -19,6 +19,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "IRCWidget.h"
 
 namespace Ui {
     class MainWindow;
@@ -34,6 +35,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    IRCWidget *m_ircWidget;
 };
 
 #endif // MAINWINDOW_H
