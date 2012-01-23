@@ -15,30 +15,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef IRCCHANNELVIEW_H
+#define IRCCHANNELVIEW_H
 
-#include <QMainWindow>
-#include "QIRCWidget.h"
+#include <QWidget>
+#include <QScrollBar>
+#include "IRCChannelProxyImpl.h"
 
 namespace Ui {
-    class MainWindow;
+    class IRCChannelView;
 }
 
-class MainWindow : public QMainWindow
+class IRCChannelView : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit IRCChannelView(IRCChannelProxyInterface *ircChannelProxy, QWidget *parent = 0);
+    ~IRCChannelView();
 
-public slots:
-    void askForChannel();
+    void scrollToBottom();
 
+    IRCChannelProxyInterface *ircChannelProxy();
 private:
-    Ui::MainWindow *ui;
-    QIRCWidget *m_ircWidget;
+    Ui::IRCChannelView *ui;
+    IRCChannelProxyInterface *m_ircChannelProxy;
 };
 
-#endif // MAINWINDOW_H
+#endif // IRCCHANNELVIEW_H

@@ -178,8 +178,8 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             {
             case IRCReply::Welcome:
                 m_loggedIn = true;
-                emit userNicknameChanged (nickname ());
-                emit loggedIn (nickname ());
+                emit userNicknameChanged(nickname ());
+                emit loggedIn(nickname ());
                 break;
             case IRCError::NicknameInUse:
             case IRCError::NickCollision:
@@ -212,8 +212,9 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             case IRCReply::NameReply:
                 QString channel = ircServerMessage.parameter (2);
                 QString nickList = ircServerMessage.parameter (3);
-                emit debugMessage (nickList);
-                ircChannelProxy (channel)->setNickList (nickList.split (QRegExp ("\\s+"), QString::SkipEmptyParts));
+                ircChannelProxy(channel)
+                    ->nameReply(nickList.split(
+                        QRegExp ("\\s+"), QString::SkipEmptyParts));
                 break;
             }
         }
@@ -261,12 +262,14 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
             else if (command == IRCCommand::PrivateMessage)
             {
-                emit message (ircServerMessage.parameter (0), ircServerMessage.nick (), ircServerMessage.parameter (1));
+                IRCChannelProxyInterface *ircChannel = ircChannelProxy(ircServerMessage.parameter(0));
+                if(ircChannel) {
+                    ircChannel->handleMessage(ircServerMessage.nick(), ircServerMessage.parameter(1));
+                }
             }
             else if (command == IRCCommand::Notice)
             {
-                emit notification (ircServerMessage.nick ().toStdString ().c_str (),
-                                   ircServerMessage.parameter (1).toStdString ().c_str ());
+                emit notification(ircServerMessage.nick(), ircServerMessage.parameter(1));
             }
             else if (command == IRCCommand::Ping)
             {

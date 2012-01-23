@@ -15,35 +15,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <QInputDialog>
+#include "IRCChannelView.h"
+#include "ui_IRCChannelView.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+IRCChannelView::IRCChannelView(IRCChannelProxyInterface *ircChannelProxy, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::IRCChannelView)
 {
     ui->setupUi(this);
-    m_ircWidget = new QIRCWidget(this);
-    setCentralWidget(m_ircWidget);
-    connect(m_ircWidget, SIGNAL(connected()), this, SLOT(askForChannel()));
+    m_ircChannelProxy = ircChannelProxy;
 
-    m_ircWidget->connectToServer("irc.freenode.net", "QircUser");
+    ui->chatTextEdit->setDocument(m_ircChannelProxy->conversationModel());
+    ui->usersListView->setModel(m_ircChannelProxy->userListModel());
 }
 
-MainWindow::~MainWindow()
+IRCChannelView::~IRCChannelView()
 {
     delete ui;
 }
 
-void MainWindow::askForChannel()
+IRCChannelProxyInterface *IRCChannelView::ircChannelProxy()
 {
-    bool ok;
-    QString channel =
-            QInputDialog::getText(this, QString("Channel"),
-                                   QString("Type in the channel you wish to join:"),
-                                   QLineEdit::Normal, "#freenode", &ok);
-    if(ok) {
-        m_ircWidget->joinChannel(channel);
+    return m_ircChannelProxy;
+}
+
+void IRCChannelView::scrollToBottom()
+{
+    if(ui->chatTextEdit->verticalScrollBar()) {
+        ui->chatTextEdit->verticalScrollBar()->setValue(
+                    ui->chatTextEdit->verticalScrollBar()->maximum());
     }
 }
+

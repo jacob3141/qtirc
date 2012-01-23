@@ -29,24 +29,27 @@ class IRCChannelProxyImpl : public IRCChannelProxyInterface
 {
     Q_OBJECT
 public:
-    IRCChannelProxyImpl (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent = 0);
-    QTextDocument *conversationModel ();
-    QStringListModel *userListModel ();
-    QString channelName ();
+    IRCChannelProxyImpl(IRCClientInterface *ircClient, const QString& channelName, QObject *parent = 0);
+    QTextDocument *conversationModel();
+    QStringListModel *userListModel();
+    QString channelName();
 
-    void setNickList (const QStringList &nickList);
-    void sendMessage (const QString& message);
-    void sendJoinRequest ();
-    void leave (const QString &reason);
 public slots:
-    void handleNickChange (const QString& oldNick, const QString& newNick);
-    void handleJoin (const QString& nick);
+    void nameReply(const QStringList &nickList);
+    void sendMessage(const QString& message);
+    void sendJoinRequest();
+    void leave(const QString &reason);
+
+    void handleMessage(const QString &nick, const QString &message);
+    void handleNickChange(const QString& oldNick, const QString& newNick);
+    void handleJoin(const QString& nick);
+
 private:
     QString             m_channelName;
     QStringList         m_userList;
     QStringListModel    m_userListModel;
     QTextDocument       m_conversationModel;
-    IRCClientInterface *m_clientInterface;
+    IRCClientInterface *m_ircClient;
 };
 
 #endif // IRCCHANNELPROXYIMPL_H

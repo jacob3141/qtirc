@@ -30,43 +30,44 @@ class IRCClientInterface;
   */
 class IRCChannelProxyInterface : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  IRCChannelProxyInterface (IRCClientInterface *, const QString&, QObject *parent = 0) : QObject (parent) { }
-  virtual ~IRCChannelProxyInterface () { }
+    IRCChannelProxyInterface (IRCClientInterface *, const QString&, QObject *parent = 0) : QObject (parent) { }
+    virtual ~IRCChannelProxyInterface () { }
 
-  /** Returns the conversation model part. */
-  virtual QTextDocument *conversationModel () = 0;
+    /** Returns the conversation model part. */
+    virtual QTextDocument *conversationModel () = 0;
 
-  /** Returns a string list model for the user list. */
-  virtual QStringListModel *userListModel () = 0;
+    /** Returns a string list model for the user list. */
+    virtual QStringListModel *userListModel () = 0;
 
-  /** Returns the name of this channel. */
-  virtual QString channelName () = 0;
+    /** Returns the name of this channel. */
+    virtual QString channelName () = 0;
 
-  /**
-    * Overwrites the current nick list by settings a new nick list.
-    * \arg nickList The new nick list to set.
+public slots:
+    /**
+    * Name reply from the server.
+    * \arg nickList The nick list from the server.
     */
-  virtual void setNickList (const QStringList& nickList) = 0;
+    virtual void nameReply (const QStringList& nickList) = 0;
 
-  /**
+    /**
     * Sends a public message onto this channel.
     * \arg message The message that should be sent.
     */
-  virtual void sendMessage (const QString& message) = 0;
+    virtual void sendMessage (const QString& message) = 0;
 
-  /** Requests to join this channel. */
-  virtual void sendJoinRequest () = 0;
+    /** Requests to join this channel. */
+    virtual void sendJoinRequest () = 0;
 
-  /**
+    /**
     * Requests to leave this channel.
     * \arg reason Reason for leaving the channel.
     */
-  virtual void leave (const QString& reason) = 0;
+    virtual void leave (const QString& reason) = 0;
 
-public slots:
-  virtual void handleNickChange (const QString& oldNick, const QString& newNick) = 0;
-  virtual void handleJoin (const QString& nick) = 0;
+    virtual void handleMessage(const QString& nick, const QString& message) = 0;
+    virtual void handleNickChange (const QString& oldNick, const QString& newNick) = 0;
+    virtual void handleJoin (const QString& nick) = 0;
 };
 #endif // IRCCHANNELPROXYINTERFACE_H

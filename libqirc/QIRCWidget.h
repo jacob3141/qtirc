@@ -15,30 +15,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef QIRCWIDGET_H
+#define QIRCWIDGET_H
 
-#include <QMainWindow>
-#include "QIRCWidget.h"
+#include <QWidget>
+#include <QSet>
+#include "IRCClientImpl.h"
+#include "IRCServerView.h"
 
 namespace Ui {
-    class MainWindow;
+    class QIRCWidget;
 }
 
-class MainWindow : public QMainWindow
+class QIRCWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit QIRCWidget(QWidget *parent = 0);
+    ~QIRCWidget();
+
+    void connectToServer(QString url, QString nick);
+    void joinChannel(QString channel);
 
 public slots:
-    void askForChannel();
+    void showChangeUserNickPopup();
+    void sendMessage(QString message);
+    void handleConnected(QString server);
+
+signals:
+    void connected();
 
 private:
-    Ui::MainWindow *ui;
-    QIRCWidget *m_ircWidget;
+    Ui::QIRCWidget *ui;
+    IRCClientInterface *m_ircClient;
+    IRCServerView *m_ircServerView;
+    QSet<IRCChannelProxyInterface*> m_trackedChannels;
 };
 
-#endif // MAINWINDOW_H
+#endif // QIRCWIDGET_H

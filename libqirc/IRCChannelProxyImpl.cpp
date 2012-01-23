@@ -18,14 +18,15 @@
 #include "IRCClientInterface.h"
 #include "IRCChannelProxyImpl.h"
 #include "IRCCommand.h"
+#include <QPlainTextDocumentLayout>
 
-IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent)
-    : IRCChannelProxyInterface (clientInterface, channelName, parent),
-      m_clientInterface (clientInterface)
+IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *ircClient, const QString& channelName, QObject *parent)
+    : IRCChannelProxyInterface(ircClient, channelName, parent),
+      m_ircClient(ircClient)
 {
     m_channelName = channelName;
-    connect (clientInterface, SIGNAL (nicknameChanged (QString,QString)),
-             this, SLOT (handleNickChange (QString,QString)));
+    connect(ircClient, SIGNAL(nicknameChanged(QString, QString)),
+             this, SLOT(handleNickChange(QString, QString)));
 }
 
 QTextDocument *
@@ -47,25 +48,29 @@ IRCChannelProxyImpl::channelName ()
 }
 
 void
-IRCChannelProxyImpl::setNickList (const QStringList &nickList)
+IRCChannelProxyImpl::nameReply(const QStringList &nickList)
 {
-    m_userList = nickList;
-    m_userListModel.setStringList (nickList);
+    m_userList.append(nickList);
+    m_userListModel.setStringList(m_userList);
 }
 
 void
-IRCChannelProxyImpl::sendMessage (const QString& message)
+IRCChannelProxyImpl::sendMessage(const QString& message)
 {
     QStringList arguments;
     arguments << m_channelName;
     arguments << message;
-    m_clientInterface->sendIRCCommand (IRCCommand::PrivateMessage, arguments);
+    m_ircClient->sendIRCCommand(IRCCommand::PrivateMessage, arguments);
+
+    QTextEdit textEdit;
+    textEdit.setDocument(&m_conversationModel);
+    textEdit.append(m_ircClient->nickname() + ": " + message);
 }
 
 void
 IRCChannelProxyImpl::sendJoinRequest ()
 {
-    m_clientInterface->sendIRCCommand (IRCCommand::Join, QStringList (m_channelName));
+    m_ircClient->sendIRCCommand (IRCCommand::Join, QStringList (m_channelName));
 }
 
 
@@ -73,6 +78,13 @@ void
 IRCChannelProxyImpl::leave (const QString& reason)
 {
     Q_UNUSED (reason);
+}
+
+void IRCChannelProxyImpl::handleMessage(const QString &nick, const QString &message)
+{
+    QTextEdit textEdit;
+    textEdit.setDocument(&m_conversationModel);
+    textEdit.append(nick + ": " + message);
 }
 
 void

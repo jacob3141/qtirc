@@ -39,49 +39,48 @@
   */
 class IRCClientImpl : public IRCClientInterface
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  IRCClientImpl (QObject *parent = 0);
-  ~IRCClientImpl ();
+    IRCClientImpl (QObject *parent = 0);
+    ~IRCClientImpl ();
 
-  const QString& nickname ();
-  bool isConnected ();
-  bool isLoggedIn ();
-  const QHostAddress& host();
-  int port();
-  IRCChannelProxyInterface *ircChannelProxy(const QString& channel);
-  void sendIRCCommand (const QString& command, const QStringList& arguments);
+    const QString& nickname ();
+    bool isConnected ();
+    bool isLoggedIn ();
+    const QHostAddress& host();
+    int port();
+    IRCChannelProxyInterface *ircChannelProxy(const QString& channel);
+    void sendIRCCommand (const QString& command, const QStringList& arguments);
 
 public slots:
-  void connectToHost (const QHostAddress& host, int port, const QString& initialNick);
-  void disconnect ();
-  void reconnect ();
+    void connectToHost (const QHostAddress& host, int port, const QString& initialNick);
+    void disconnect ();
+    void reconnect ();
 
-  void sendNicknameChangeRequest (const QString &nickname);
-  void sendPrivateMessage (const QString &recipient, const QString &message);
+    void sendNicknameChangeRequest (const QString &nickname);
+    void sendPrivateMessage (const QString &recipient, const QString &message);
 
-signals:
-  void debugMessage (const QString& message);
+
 
 private slots:
-  void handleConnected ();
-  void handleDisconnected ();
-  void handleReadyRead ();
+    void handleConnected ();
+    void handleDisconnected ();
+    void handleReadyRead ();
 
 private:
-  void handleNicknameChanged (const QString& oldNick, const QString& newNick);
-  void handleUserJoined (const QString& nick, const QString& channel);
-  void handleUserQuit (const QString& nick, const QString& reason);
-  void handleIncomingLine (const QString& line);
-  void sendLine (const QString& line);
+    void handleNicknameChanged (const QString& oldNick, const QString& newNick);
+    void handleUserJoined (const QString& nick, const QString& channel);
+    void handleUserQuit (const QString& nick, const QString& reason);
+    void handleIncomingLine (const QString& line);
+    void sendLine (const QString& line);
 
-  QHostAddress                              m_host;
-  int                                       m_port;
-  QString                                   m_nickname;
-  bool                                      m_connected;
-  bool                                      m_loggedIn;
-  QTcpSocket                                m_tcpSocket;
-  QMap<QString, IRCChannelProxyInterface*>  m_channels;
+    QHostAddress                              m_host;
+    int                                       m_port;
+    QString                                   m_nickname;
+    bool                                      m_connected;
+    bool                                      m_loggedIn;
+    QTcpSocket                                m_tcpSocket;
+    QMap<QString, IRCChannelProxyInterface*>  m_channels;
 };
 
 #endif // IRCCLIENTIMPL_H
