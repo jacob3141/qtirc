@@ -35,6 +35,8 @@ QIRCWidget::QIRCWidget(QWidget *parent) :
 
     m_ircServerView = new IRCServerView(m_ircClient);
     ui->channelsTabWidget->addTab(m_ircServerView, "Server status");
+
+    m_channelAutoJoin = QString();
 }
 
 QIRCWidget::~QIRCWidget()
@@ -57,8 +59,9 @@ void QIRCWidget::joinChannel(QString channel)
     }
 }
 
-void QIRCWidget::connectToServer(QString url, QString nick)
+void QIRCWidget::connectToServer(QString url, QString nick, QString channelAutoJoin)
 {
+    m_channelAutoJoin = channelAutoJoin;
     ui->nickPushButton->setText(nick);
 
     QHostInfo hostInfo = QHostInfo::fromName(url);
@@ -128,5 +131,8 @@ void QIRCWidget::sendMessage(QString message)
 void QIRCWidget::handleConnected(QString server)
 {
     Q_UNUSED(server);
+    if(!m_channelAutoJoin.isEmpty()) {
+        joinChannel(m_channelAutoJoin);
+    }
     emit connected();
 }

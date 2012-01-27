@@ -21,7 +21,11 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTextEdit" name="serverTextEdit"/>
+    <widget class="QTextEdit" name="serverTextEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

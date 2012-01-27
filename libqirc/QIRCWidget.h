@@ -35,7 +35,7 @@ public:
     explicit QIRCWidget(QWidget *parent = 0);
     ~QIRCWidget();
 
-    void connectToServer(QString url, QString nick);
+    void connectToServer(QString url, QString nick, QString channelAutoJoin = QString());
     void joinChannel(QString channel);
 
 public slots:
@@ -51,6 +51,7 @@ private:
     IRCClientInterface *m_ircClient;
     IRCServerView *m_ircServerView;
     QSet<IRCChannelProxyInterface*> m_trackedChannels;
+    QString m_channelAutoJoin;
 };
 
 #endif // QIRCWIDGET_H
