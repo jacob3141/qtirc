@@ -51,6 +51,8 @@ void
 IRCChannelProxyImpl::nameReply(const QStringList &nickList)
 {
     m_userList.append(nickList);
+    m_userList.removeDuplicates();
+    m_userList.sort();
     m_userListModel.setStringList(m_userList);
 }
 
@@ -101,5 +103,7 @@ IRCChannelProxyImpl::handleJoin (const QString &nick)
 {
     m_userList = m_userListModel.stringList ();
     m_userList.append (nick);
+    m_userList.removeDuplicates();
+    m_userList.sort();
     m_userListModel.setStringList (m_userList);
 }

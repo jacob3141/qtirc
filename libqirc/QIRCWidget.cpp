@@ -34,7 +34,7 @@ QIRCWidget::QIRCWidget(QWidget *parent) :
     connect(m_ircClient, SIGNAL(loggedIn(QString)), this, SLOT(handleConnected(QString)));
 
     m_ircServerView = new IRCServerView(m_ircClient);
-    ui->channelsTabWidget->addTab(m_ircServerView, "Server status");
+    ui->channelsTabWidget->addTab(m_ircServerView, "Server");
 
     m_channelAutoJoin = QString();
 }
@@ -98,7 +98,7 @@ void QIRCWidget::sendMessage(QString message)
         QStringList line = message.split(QRegExp ("\\s+"), QString::SkipEmptyParts);
         QString command = line.at(0);
 
-        if(command == "/join") {
+        if(command == "/join" || command == "/j") {
             joinChannel(line.at(1));
         } else if(command == "/nick") {
             m_ircClient->sendNicknameChangeRequest(line.at(1));
