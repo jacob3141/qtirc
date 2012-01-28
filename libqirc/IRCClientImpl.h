@@ -60,8 +60,6 @@ public slots:
     void sendNicknameChangeRequest (const QString &nickname);
     void sendPrivateMessage (const QString &recipient, const QString &message);
 
-
-
 private slots:
     void handleConnected ();
     void handleDisconnected ();

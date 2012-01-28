@@ -106,7 +106,6 @@ signals:
     * \arg sender The nickname of the sender.
     * \arg message The message that has been sent.
     */
-    void newMessage (const QString& channel, const QString& sender, const QString& message);
     void message (const QString& channel, const QString& sender, const QString& message);
 
     /**

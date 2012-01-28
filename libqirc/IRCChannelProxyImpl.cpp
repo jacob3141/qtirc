@@ -51,9 +51,7 @@ void
 IRCChannelProxyImpl::nameReply(const QStringList &nickList)
 {
     m_userList.append(nickList);
-    m_userList.removeDuplicates();
-    m_userList.sort();
-    m_userListModel.setStringList(m_userList);
+    processUserList();
 }
 
 void
@@ -63,10 +61,7 @@ IRCChannelProxyImpl::sendMessage(const QString& message)
     arguments << m_channelName;
     arguments << message;
     m_ircClient->sendIRCCommand(IRCCommand::PrivateMessage, arguments);
-
-    QTextEdit textEdit;
-    textEdit.setDocument(&m_conversationModel);
-    textEdit.append(m_ircClient->nickname() + ": " + message);
+    handleMessage(m_ircClient->nickname(), message);
 }
 
 void
@@ -74,7 +69,6 @@ IRCChannelProxyImpl::sendJoinRequest ()
 {
     m_ircClient->sendIRCCommand (IRCCommand::Join, QStringList (m_channelName));
 }
-
 
 void
 IRCChannelProxyImpl::leave (const QString& reason)
@@ -84,9 +78,19 @@ IRCChannelProxyImpl::leave (const QString& reason)
 
 void IRCChannelProxyImpl::handleMessage(const QString &nick, const QString &message)
 {
+    int i, colorTablePosition = 0;
+    for(i = 0; i < m_userList.size(); i++) {
+        if(m_userList.at(i) == nick) {
+            colorTablePosition = i;
+            break;
+        }
+    }
+
+    QColor color = m_colorTable.at(colorTablePosition);
+
     QTextEdit textEdit;
     textEdit.setDocument(&m_conversationModel);
-    textEdit.append(nick + ": " + message);
+    textEdit.append(QString("<font color=\"%1\"><b>").arg(color.name()) + nick + "</b>: " + message + "</font>");
 }
 
 void
@@ -94,8 +98,7 @@ IRCChannelProxyImpl::handleNickChange (const QString &oldNick, const QString &ne
 {
     m_userList = m_userListModel.stringList ();
     m_userList.removeAll (oldNick);
-    m_userList.append (newNick);
-    m_userListModel.setStringList (m_userList);
+    processUserList();
 }
 
 void
@@ -103,7 +106,25 @@ IRCChannelProxyImpl::handleJoin (const QString &nick)
 {
     m_userList = m_userListModel.stringList ();
     m_userList.append (nick);
+    processUserList();
+}
+
+void
+IRCChannelProxyImpl::processUserList()
+{
     m_userList.removeDuplicates();
     m_userList.sort();
     m_userListModel.setStringList (m_userList);
+    rebuildColorTable();
+}
+
+void
+IRCChannelProxyImpl::rebuildColorTable()
+{
+    int i, size = m_userList.size();
+    m_colorTable.clear();
+    m_colorTable.resize(size);
+    for(i = 0; i < size; i++) {
+        m_colorTable[i] = QColor::fromHsv((double)i * 360.0 / (double)size, 255, 128);
+    }
 }

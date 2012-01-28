@@ -19,6 +19,8 @@
 #define IRCCHANNELPROXYIMPL_H
 
 #include "IRCChannelProxyInterface.h"
+#include <QVector>
+#include <QColor>
 
 /**
   * \class IRCChannelProxyImpl
@@ -45,11 +47,15 @@ public slots:
     void handleJoin(const QString& nick);
 
 private:
+    void processUserList();
+    void rebuildColorTable();
+
     QString             m_channelName;
     QStringList         m_userList;
     QStringListModel    m_userListModel;
     QTextDocument       m_conversationModel;
     IRCClientInterface *m_ircClient;
+    QVector<QColor>     m_colorTable;
 };
 
 #endif // IRCCHANNELPROXYIMPL_H
