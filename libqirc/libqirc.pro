@@ -32,3 +32,5 @@ FORMS += \
     QIRCWidget.ui \
     IRCChannelView.ui \
     IRCServerView.ui
+
+win32-msvc*: include(../msvc.pri)

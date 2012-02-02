@@ -5,7 +5,8 @@ TEMPLATE = app
 
 INCLUDEPATH += ../libqirc
 
-LIBS += -L../libqirc -lqirc
+win32-msvc*: include(../msvc.pri)
+LIBS += -L../libqirc/$$LIBDIR_SUFFIX -lqirc
 
 SOURCES += main.cpp\
         mainwindow.cpp
