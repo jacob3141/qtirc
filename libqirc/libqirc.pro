@@ -1,5 +1,5 @@
 
-QT += network gui
+QT += network gui widgets
 
 TEMPLATE = lib
 TARGET = qirc
