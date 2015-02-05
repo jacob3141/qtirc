@@ -1,36 +1,34 @@
-
 QT += network gui widgets
 
 TEMPLATE = lib
-TARGET = qirc
-DEPENDPATH += .
-INCLUDEPATH += .
 
 CONFIG += staticlib
 
-# Input
-HEADERS += IRCClientImpl.h IRCClientInterface.h IRCCodes.h \
-    IRCServerMessage.h \
-    IRCChannelProxyInterface.h \
-    IRCCommand.h \
-    IRCReply.h \
-    IRCError.h \
-    IRCChannelProxyImpl.h \
-    ChatMessageTextEdit.h \
-    QIRCWidget.h \
-    IRCChannelView.h \
-    IRCServerView.h
-SOURCES += IRCClientImpl.cpp \
-    IRCServerMessage.cpp \
-    IRCChannelProxyImpl.cpp \
-    ChatMessageTextEdit.cpp \
-    QIRCWidget.cpp \
-    IRCChannelView.cpp \
-    IRCServerView.cpp
+HEADERS += \
+    chatmessagetextedit.h \
+    ircchannelproxyinterface.h \
+    ircchannelview.h \
+    ircclientimpl.h \
+    ircclientinterface.h \
+    irccodes.h \
+    irccommand.h \
+    ircerror.h \
+    ircreply.h \
+    ircservermessage.h \
+    ircserverview.h \
+    ircwidget.h \
+    ircchannelproxyimpl.h
+
+SOURCES += \
+    chatmessagetextedit.cpp \
+    ircchannelproxyimpl.cpp \
+    ircchannelview.cpp \
+    ircclientimpl.cpp \
+    ircservermessage.cpp \
+    ircserverview.cpp \
+    ircwidget.cpp
 
 FORMS += \
-    QIRCWidget.ui \
-    IRCChannelView.ui \
-    IRCServerView.ui
-
-win32-msvc*: include(../msvc.pri)
+    ircchannelview.ui \
+    ircserverview.ui \
+    ircwidget.ui

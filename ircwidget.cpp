@@ -1,5 +1,5 @@
-/* qirc - Qt based IRC client
- * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
+/* QtIRC - Qt based IRC client
+ * Copyright (C) 2012-2015 Jacob Dawid (jacob@omg-it.works)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,14 +15,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Own includes
+#include "ircwidget.h"
+#include "ui_ircwidget.h"
+#include "ircchannelview.h"
+#include "ircserverview.h"
+
+// Qt includes
 #include <QDebug>
 #include <QInputDialog>
-#include "QIRCWidget.h"
-#include "ui_QIRCWidget.h"
-#include "IRCChannelView.h"
-#include "IRCServerView.h"
 
-QIRCWidget::QIRCWidget(QWidget *parent) :
+IRCWidget::IRCWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::QIRCWidget)
 {
@@ -39,13 +42,13 @@ QIRCWidget::QIRCWidget(QWidget *parent) :
     m_channelAutoJoin = QString();
 }
 
-QIRCWidget::~QIRCWidget()
+IRCWidget::~IRCWidget()
 {
     delete ui;
     delete m_ircClient;
 }
 
-void QIRCWidget::joinChannel(QString channel)
+void IRCWidget::joinChannel(QString channel)
 {
     IRCChannelProxyInterface *ircChannelProxy = m_ircClient->ircChannelProxy(channel);
     if(!m_trackedChannels.contains(ircChannelProxy)) {
@@ -59,7 +62,7 @@ void QIRCWidget::joinChannel(QString channel)
     }
 }
 
-void QIRCWidget::connectToServer(QString url, QString nick, QString channelAutoJoin)
+void IRCWidget::connectToServer(QString url, QString nick, QString channelAutoJoin)
 {
     m_channelAutoJoin = channelAutoJoin;
     ui->nickPushButton->setText(nick);
@@ -72,7 +75,7 @@ void QIRCWidget::connectToServer(QString url, QString nick, QString channelAutoJ
     }
 }
 
-void QIRCWidget::showChangeUserNickPopup()
+void IRCWidget::showChangeUserNickPopup()
 {
     bool ok;
     QString newNick =
@@ -84,7 +87,7 @@ void QIRCWidget::showChangeUserNickPopup()
     }
 }
 
-void QIRCWidget::sendMessage(QString message)
+void IRCWidget::sendMessage(QString message)
 {
     // Do not send empty messages.
     if (message.isEmpty ())
@@ -128,7 +131,7 @@ void QIRCWidget::sendMessage(QString message)
     }
 }
 
-void QIRCWidget::handleConnected(QString server)
+void IRCWidget::handleConnected(QString server)
 {
     Q_UNUSED(server);
     if(!m_channelAutoJoin.isEmpty()) {

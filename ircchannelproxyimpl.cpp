@@ -1,5 +1,5 @@
-/* qirc - Qt based IRC client
- * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
+/* QtIRC - Qt based IRC client
+ * Copyright (C) 2012-2015 Jacob Dawid (jacob@omg-it.works)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,9 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "IRCClientInterface.h"
-#include "IRCChannelProxyImpl.h"
-#include "IRCCommand.h"
+// Own includes
+#include "ircclientinterface.h"
+#include "ircchannelproxyimpl.h"
+#include "irccommand.h"
+
+// Qt includes
 #include <QPlainTextDocumentLayout>
 
 IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *ircClient, const QString& channelName, QObject *parent)

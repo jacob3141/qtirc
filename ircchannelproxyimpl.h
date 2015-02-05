@@ -1,5 +1,5 @@
-/* qirc - Qt based IRC client
- * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
+/* QtIRC - Qt based IRC client
+ * Copyright (C) 2012-2015 Jacob Dawid (jacob@omg-it.works)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,10 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IRCCHANNELPROXYIMPL_H
-#define IRCCHANNELPROXYIMPL_H
+#pragma once
 
-#include "IRCChannelProxyInterface.h"
+// Own includes
+#include "ircchannelproxyinterface.h"
+
+// Qt includes
 #include <QVector>
 #include <QColor>
 
@@ -57,5 +59,3 @@ private:
     IRCClientInterface *m_ircClient;
     QVector<QColor>     m_colorTable;
 };
-
-#endif // IRCCHANNELPROXYIMPL_H

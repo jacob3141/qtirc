@@ -1,5 +1,5 @@
-/* qirc - Qt based IRC client
- * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
+/* QtIRC - Qt based IRC client
+ * Copyright (C) 2012-2015 Jacob Dawid (jacob@omg-it.works)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IRCCHANNELPROXYINTERFACE_H
-#define IRCCHANNELPROXYINTERFACE_H
+#pragma once
 
+// Qt includes
 #include <QString>
 #include <QStringList>
 #include <QTextDocument>
@@ -70,4 +70,3 @@ public slots:
     virtual void handleNickChange (const QString& oldNick, const QString& newNick) = 0;
     virtual void handleJoin (const QString& nick) = 0;
 };
-#endif // IRCCHANNELPROXYINTERFACE_H

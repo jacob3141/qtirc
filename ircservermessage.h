@@ -1,5 +1,5 @@
-/* qirc - Qt based IRC client
- * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
+/* QtIRC - Qt based IRC client
+ * Copyright (C) 2012-2015 Jacob Dawid (jacob@omg-it.works)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IRCSERVERMESSAGE_H
-#define IRCSERVERMESSAGE_H
+#pragma once
 
+// Qt includes
 #include <QString>
 #include <QStringList>
 
@@ -27,8 +27,7 @@
   * It parses the server message into its single bits and makes these
   * available through Getter-methods.
   */
-class IRCServerMessage
-{
+class IRCServerMessage {
 public:
   IRCServerMessage (const QString& serverMessage);
 
@@ -53,5 +52,3 @@ private:
   QString     m_command;
   QStringList m_parameters;
 };
-
-#endif // IRCSERVERMESSAGE_H

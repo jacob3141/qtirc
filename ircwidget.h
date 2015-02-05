@@ -1,5 +1,5 @@
-/* qirc - Qt based IRC client
- * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
+/* QtIRC - Qt based IRC client
+ * Copyright (C) 2012-2015 Jacob Dawid (jacob@omg-it.works)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,25 +15,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QIRCWIDGET_H
-#define QIRCWIDGET_H
+#pragma once
 
+// Own includes
+#include "ircclientimpl.h"
+#include "ircserverview.h"
+
+// Qt includes
 #include <QWidget>
 #include <QSet>
-#include "IRCClientImpl.h"
-#include "IRCServerView.h"
 
 namespace Ui {
     class QIRCWidget;
 }
 
-class QIRCWidget : public QWidget
-{
+class IRCWidget : public QWidget {
     Q_OBJECT
 
 public:
-    explicit QIRCWidget(QWidget *parent = 0);
-    ~QIRCWidget();
+    explicit IRCWidget(QWidget *parent = 0);
+    ~IRCWidget();
 
     void connectToServer(QString url, QString nick, QString channelAutoJoin = QString());
     void joinChannel(QString channel);
@@ -53,5 +54,3 @@ private:
     QSet<IRCChannelProxyInterface*> m_trackedChannels;
     QString m_channelAutoJoin;
 };
-
-#endif // QIRCWIDGET_H
