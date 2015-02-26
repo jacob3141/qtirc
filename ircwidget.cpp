@@ -17,7 +17,6 @@
 
 // Own includes
 #include "ircwidget.h"
-#include "ui_ircwidget.h"
 #include "ircchannelwidget.h"
 #include "ircserverwidget.h"
 
