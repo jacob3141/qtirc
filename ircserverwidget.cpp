@@ -16,12 +16,12 @@
  */
 
 // Own includes
-#include "ircserverview.h"
-#include "ui_ircserverview.h"
+#include "ircserverwidget.h"
+#include "ui_ircserverwidget.h"
 
-IRCServerView::IRCServerView(IRCClientInterface *ircClient, QWidget *parent) :
+IRCServerWidget::IRCServerWidget(IRCClient *ircClient, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::IRCServerView)
+    ui(new Ui::IRCServerWidget)
 {
     ui->setupUi(this);
     m_ircClient = ircClient;
@@ -36,22 +36,22 @@ IRCServerView::IRCServerView(IRCClientInterface *ircClient, QWidget *parent) :
             this, SLOT(handleErrorMessage(QString)));
 }
 
-IRCServerView::~IRCServerView()
+IRCServerWidget::~IRCServerWidget()
 {
     delete ui;
 }
 
-void IRCServerView::handleNotification(QString sender, QString message)
+void IRCServerWidget::handleNotification(QString sender, QString message)
 {
     ui->serverTextEdit->append(sender + ": " + message);
 }
 
-void IRCServerView::handleDebugMessage(QString message)
+void IRCServerWidget::handleDebugMessage(QString message)
 {
     ui->serverTextEdit->append(message);
 }
 
-void IRCServerView::handleErrorMessage(QString message)
+void IRCServerWidget::handleErrorMessage(QString message)
 {
     ui->serverTextEdit->append(message);
 }

@@ -18,21 +18,21 @@
 #pragma once
 
 // Own includes
-#include "ircclientimpl.h"
+#include "ircclient.h"
 
 // Qt includes
 #include <QWidget>
 
 namespace Ui {
-    class IRCServerView;
+    class IRCServerWidget;
 }
 
-class IRCServerView : public QWidget {
+class IRCServerWidget : public QWidget {
     Q_OBJECT
 
 public:
-    explicit IRCServerView(IRCClientInterface *ircClient, QWidget *parent = 0);
-    ~IRCServerView();
+    explicit IRCServerWidget(IRCClient *ircClient, QWidget *parent = 0);
+    ~IRCServerWidget();
 
 public slots:
     void handleNotification(QString sender, QString message);
@@ -40,6 +40,6 @@ public slots:
     void handleErrorMessage(QString message);
 
 private:
-    Ui::IRCServerView *ui;
-    IRCClientInterface *m_ircClient;
+    Ui::IRCServerWidget *ui;
+    IRCClient *m_ircClient;
 };

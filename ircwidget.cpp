@@ -18,60 +18,86 @@
 // Own includes
 #include "ircwidget.h"
 #include "ui_ircwidget.h"
-#include "ircchannelview.h"
-#include "ircserverview.h"
+#include "ircchannelwidget.h"
+#include "ircserverwidget.h"
 
 // Qt includes
 #include <QDebug>
 #include <QInputDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 IRCWidget::IRCWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::QIRCWidget)
+    QWidget(parent)
 {
-    ui->setupUi(this);
-    m_ircClient = new IRCClientImpl();
+    _ircClient = new IRCClient;
+    _tabWidget = new QTabWidget;
 
-    connect(ui->nickPushButton, SIGNAL(clicked()), this, SLOT(showChangeUserNickPopup()));
-    connect(ui->chatMessageTextEdit, SIGNAL(sendMessage(QString)), this, SLOT(sendMessage(QString)));
-    connect(m_ircClient, SIGNAL(loggedIn(QString)), this, SLOT(handleConnected(QString)));
+    _ircServerWidget = new IRCServerWidget(_ircClient);
+    _tabWidget->addTab(_ircServerWidget, tr("Server"));
 
-    m_ircServerView = new IRCServerView(m_ircClient);
-    ui->channelsTabWidget->addTab(m_ircServerView, "Server");
+    QWidget *messageWidget = new QWidget;
+    _pushButtonNick = new QPushButton;
+    _pushButtonNick->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    _chatMessageTextEdit = new ChatMessageTextEdit;
+    _chatMessageTextEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    messageWidget->setMaximumHeight(80);
+    QHBoxLayout *hBoxLayout = new QHBoxLayout;
+    hBoxLayout->addWidget(_pushButtonNick);
+    hBoxLayout->addWidget(_chatMessageTextEdit);
+    hBoxLayout->setContentsMargins(0, 0, 0, 0);
+    messageWidget->setLayout(hBoxLayout);
 
-    m_channelAutoJoin = QString();
+    _splitter = new QSplitter;
+    _splitter->setOrientation(Qt::Vertical);
+    _splitter->addWidget(_tabWidget);
+    _splitter->addWidget(messageWidget);
+
+    QVBoxLayout *vBoxLayout = new QVBoxLayout;
+    vBoxLayout->addWidget(_splitter);
+    setLayout(vBoxLayout);
+
+
+    connect(_pushButtonNick, SIGNAL(clicked()), this, SLOT(showChangeUserNickPopup()));
+    connect(_chatMessageTextEdit, SIGNAL(sendMessage(QString)), this, SLOT(sendMessage(QString)));
+    connect(_ircClient, SIGNAL(loggedIn(QString)), this, SLOT(handleConnected(QString)));
+
+    _autoJoinChannel = QString();
 }
 
 IRCWidget::~IRCWidget()
 {
-    delete ui;
-    delete m_ircClient;
+
+    delete _ircClient;
 }
 
 void IRCWidget::joinChannel(QString channel)
 {
-    IRCChannelProxyInterface *ircChannelProxy = m_ircClient->ircChannelProxy(channel);
-    if(!m_trackedChannels.contains(ircChannelProxy)) {
-        m_trackedChannels.insert(ircChannelProxy);
+    IRCChannel *ircChannel = _ircClient->ircChannel(channel);
+    if(!_channels.contains(ircChannel)) {
+        _channels.insert(ircChannel);
 
-        IRCChannelView *ircChannelView = new IRCChannelView(ircChannelProxy);
-        int tabIndex = ui->channelsTabWidget->addTab(ircChannelView, channel);
-        ui->channelsTabWidget->setCurrentIndex(tabIndex);
+        IRCChannelWidget *ircChannelWidget = new IRCChannelWidget(ircChannel);
+        int tabIndex = _tabWidget->addTab(ircChannelWidget, channel);
+        _tabWidget->setCurrentIndex(tabIndex);
 
-        ircChannelProxy->sendJoinRequest();
+        ircChannel->sendJoinRequest();
     }
 }
 
-void IRCWidget::connectToServer(QString url, QString nick, QString channelAutoJoin)
+void IRCWidget::connectToServer(QString nick,
+                                QString url,
+                                quint16 port,
+                                QString autoJoinChannel)
 {
-    m_channelAutoJoin = channelAutoJoin;
-    ui->nickPushButton->setText(nick);
+    _autoJoinChannel = autoJoinChannel;
+    _pushButtonNick->setText(nick);
 
     QHostInfo hostInfo = QHostInfo::fromName(url);
     QList<QHostAddress> hostAddresses = hostInfo.addresses();
-    if(hostAddresses.isEmpty ()) {
+    if(hostAddresses.isEmpty()) {
     } else {
-        m_ircClient->connectToHost(hostAddresses.at(0), 6667, nick);
+        _ircClient->connectToHost(hostAddresses.at(0), port, nick);
     }
 }
 
@@ -81,16 +107,16 @@ void IRCWidget::showChangeUserNickPopup()
     QString newNick =
             QInputDialog::getText(this, QString("Nickname"),
                                    QString("Type in your nickname:"),
-                                   QLineEdit::Normal, m_ircClient->nickname(), &ok);
+                                   QLineEdit::Normal, _ircClient->nickname(), &ok);
     if(ok) {
-        m_ircClient->sendNicknameChangeRequest(newNick);
+        _ircClient->sendNicknameChangeRequest(newNick);
     }
 }
 
 void IRCWidget::sendMessage(QString message)
 {
     // Do not send empty messages.
-    if (message.isEmpty ())
+    if (message.isEmpty())
         return;
 
     // Remove trailing spaces.
@@ -104,7 +130,7 @@ void IRCWidget::sendMessage(QString message)
         if(command == "/join" || command == "/j") {
             joinChannel(line.at(1));
         } else if(command == "/nick") {
-            m_ircClient->sendNicknameChangeRequest(line.at(1));
+            _ircClient->sendNicknameChangeRequest(line.at(1));
         } else if(command == "/msg") {
             QString recipient = line.at(1);
             // Since we splitted the message before, we have to glue it together again.
@@ -113,19 +139,19 @@ void IRCWidget::sendMessage(QString message)
                 pmsg += line.at(i);
                 pmsg += " ";
             }
-            m_ircClient->sendPrivateMessage(recipient, pmsg);
+            _ircClient->sendPrivateMessage(recipient, pmsg);
         }
     } else { // Not a command.
-        QWidget *widget = ui->channelsTabWidget->currentWidget();
+        QWidget *widget = _tabWidget->currentWidget();
         if(widget) {
-            IRCChannelView *ircChannelView =
-                    dynamic_cast<IRCChannelView*>(widget);
-            if(ircChannelView) {
-                IRCChannelProxyInterface *ircChannelProxy = ircChannelView->ircChannelProxy();
+            IRCChannelWidget *ircChannelWidget =
+                    dynamic_cast<IRCChannelWidget*>(widget);
+            if(ircChannelWidget) {
+                IRCChannel *ircChannelProxy = ircChannelWidget->ircChannelProxy();
                 if(ircChannelProxy) {
                     ircChannelProxy->sendMessage(message);
                 }
-                ircChannelView->scrollToBottom();
+                ircChannelWidget->scrollToBottom();
             }
         }
     }
@@ -134,8 +160,8 @@ void IRCWidget::sendMessage(QString message)
 void IRCWidget::handleConnected(QString server)
 {
     Q_UNUSED(server);
-    if(!m_channelAutoJoin.isEmpty()) {
-        joinChannel(m_channelAutoJoin);
+    if(!_autoJoinChannel.isEmpty()) {
+        joinChannel(_autoJoinChannel);
     }
     emit connected();
 }

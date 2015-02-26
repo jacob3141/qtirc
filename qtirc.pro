@@ -6,29 +6,26 @@ CONFIG += staticlib
 
 HEADERS += \
     chatmessagetextedit.h \
-    ircchannelproxyinterface.h \
-    ircchannelview.h \
-    ircclientimpl.h \
-    ircclientinterface.h \
     irccodes.h \
     irccommand.h \
     ircerror.h \
     ircreply.h \
     ircservermessage.h \
-    ircserverview.h \
     ircwidget.h \
-    ircchannelproxyimpl.h
+    ircchannel.h \
+    ircclient.h \
+    ircchannelwidget.h \
+    ircserverwidget.h
 
 SOURCES += \
     chatmessagetextedit.cpp \
-    ircchannelproxyimpl.cpp \
-    ircchannelview.cpp \
-    ircclientimpl.cpp \
     ircservermessage.cpp \
-    ircserverview.cpp \
-    ircwidget.cpp
+    ircwidget.cpp \
+    ircchannel.cpp \
+    ircclient.cpp \
+    ircchannelwidget.cpp \
+    ircserverwidget.cpp
 
 FORMS += \
-    ircchannelview.ui \
-    ircserverview.ui \
-    ircwidget.ui
+    ircchannelwidget.ui \
+    ircserverwidget.ui

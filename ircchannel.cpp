@@ -16,16 +16,18 @@
  */
 
 // Own includes
-#include "ircclientinterface.h"
-#include "ircchannelproxyimpl.h"
+#include "ircclient.h"
+#include "ircchannel.h"
 #include "irccommand.h"
 
 // Qt includes
 #include <QPlainTextDocumentLayout>
 
-IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *ircClient, const QString& channelName, QObject *parent)
-    : IRCChannelProxyInterface(ircClient, channelName, parent),
-      m_ircClient(ircClient)
+IRCChannel::IRCChannel(IRCClient *ircClient,
+                                         QString channelName,
+                                         QObject *parent) :
+    QObject(parent),
+    m_ircClient(ircClient)
 {
     m_channelName = channelName;
     connect(ircClient, SIGNAL(nicknameChanged(QString, QString)),
@@ -33,32 +35,32 @@ IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *ircClient, const Q
 }
 
 QTextDocument *
-IRCChannelProxyImpl::conversationModel ()
+IRCChannel::conversationModel ()
 {
     return &m_conversationModel;
 }
 
 QStringListModel *
-IRCChannelProxyImpl::userListModel ()
+IRCChannel::userListModel ()
 {
     return &m_userListModel;
 }
 
 QString
-IRCChannelProxyImpl::channelName ()
+IRCChannel::channelName ()
 {
     return m_channelName;
 }
 
 void
-IRCChannelProxyImpl::nameReply(const QStringList &nickList)
+IRCChannel::nameReply(const QStringList &nickList)
 {
     m_userList.append(nickList);
     processUserList();
 }
 
 void
-IRCChannelProxyImpl::sendMessage(const QString& message)
+IRCChannel::sendMessage(const QString& message)
 {
     QStringList arguments;
     arguments << m_channelName;
@@ -68,18 +70,18 @@ IRCChannelProxyImpl::sendMessage(const QString& message)
 }
 
 void
-IRCChannelProxyImpl::sendJoinRequest ()
+IRCChannel::sendJoinRequest ()
 {
     m_ircClient->sendIRCCommand (IRCCommand::Join, QStringList (m_channelName));
 }
 
 void
-IRCChannelProxyImpl::leave (const QString& reason)
+IRCChannel::leave (const QString& reason)
 {
     Q_UNUSED (reason);
 }
 
-void IRCChannelProxyImpl::handleMessage(const QString &nick, const QString &message)
+void IRCChannel::handleMessage(const QString &nick, const QString &message)
 {
     int i, colorTablePosition = 0;
     for(i = 0; i < m_userList.size(); i++) {
@@ -97,7 +99,7 @@ void IRCChannelProxyImpl::handleMessage(const QString &nick, const QString &mess
 }
 
 void
-IRCChannelProxyImpl::handleNickChange (const QString &oldNick, const QString &newNick)
+IRCChannel::handleNickChange (const QString &oldNick, const QString &newNick)
 {
     m_userList = m_userListModel.stringList ();
     m_userList.removeAll (oldNick);
@@ -105,7 +107,7 @@ IRCChannelProxyImpl::handleNickChange (const QString &oldNick, const QString &ne
 }
 
 void
-IRCChannelProxyImpl::handleJoin (const QString &nick)
+IRCChannel::handleJoin (const QString &nick)
 {
     m_userList = m_userListModel.stringList ();
     m_userList.append (nick);
@@ -113,7 +115,7 @@ IRCChannelProxyImpl::handleJoin (const QString &nick)
 }
 
 void
-IRCChannelProxyImpl::processUserList()
+IRCChannel::processUserList()
 {
     m_userList.removeDuplicates();
     m_userList.sort();
@@ -122,7 +124,7 @@ IRCChannelProxyImpl::processUserList()
 }
 
 void
-IRCChannelProxyImpl::rebuildColorTable()
+IRCChannel::rebuildColorTable()
 {
     int i, size = m_userList.size();
     m_colorTable.clear();

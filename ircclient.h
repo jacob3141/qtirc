@@ -18,88 +18,48 @@
 #pragma once
 
 // Own includes
-#include "ircchannelproxyinterface.h"
+#include "ircservermessage.h"
+#include "irccommand.h"
+#include "ircreply.h"
+#include "ircerror.h"
+#include "ircchannel.h"
 
 // Qt includes
-#include <QString>
 #include <QObject>
-#include <QHostAddress>
+#include <QTcpSocket>
+#include <QHostInfo>
+#include <QStringList>
 #include <QTextDocument>
 #include <QStringListModel>
 
 /**
-  * \class IRCClientInterface
-  * IRC Clients need to implement this interface.
+  * \class IRCClient
+  * Implements an IRC client. This class can maintain a connection to one server.
+  * In order to interface an IRC channel, use the ircChannelProxy-method to retrieve
+  * a handle.
   */
-class IRCClientInterface : public QObject
-{
+class IRCClient :
+    public QObject {
     Q_OBJECT
 public:
-    IRCClientInterface (QObject *parent = 0) : QObject (parent) { }
-    virtual ~IRCClientInterface () { }
+    IRCClient(QObject *parent = 0);
+    ~IRCClient();
 
-    /** Returns the current nickname of this client. */
-    virtual const QString& nickname () = 0;
-
-    /** Returns true if connected to the server. */
-    virtual bool isConnected () = 0;
-
-    /**
-    * Returns true if logged in to the server.
-    * Note: There is a small difference between isConnected and isLoggedIn.
-    * isConnected returns true if there is a physical connection to the server.
-    * isLoggedIn only returns true if the server has already accepted you
-    * and you are ready to log into channels.
-    */
-    virtual bool isLoggedIn () = 0;
-
-    /** Returns the current host address. */
-    virtual const QHostAddress& host() = 0;
-
-    /** Returns the current port. */
-    virtual int port() = 0;
-
-    /**
-    * Returns a handle to an IRC channel.
-    * Note: Retrieving a handle does not mean you have joined this channel.
-    * \arg channel The channel to retrieve a handle for.
-    */
-    virtual IRCChannelProxyInterface *ircChannelProxy(const QString& channel) = 0;
-
-    /**
-    * Send an IRC command to the server.
-    * \arg command Command to send.
-    * \arg arguments Arguments to send.
-    */
-    virtual void sendIRCCommand (const QString& command, const QStringList& arguments) = 0;
+    const QString& nickname ();
+    bool isConnected ();
+    bool isLoggedIn ();
+    const QHostAddress& host();
+    int port();
+    IRCChannel *ircChannel(const QString& channel);
+    void sendIRCCommand (const QString& command, const QStringList& arguments);
 
 public slots:
-    /**
-    * Connects to a host.
-    * \arg host The host to connect tp.
-    * \arg port The port on which to connect to the host.
-    * \arg initialNick The initial nick to use when attempting to login.
-    */
-    virtual void connectToHost (const QHostAddress& host, int port, const QString& initialNick) = 0;
+    void connectToHost (const QHostAddress& host, quint16 port, const QString& initialNick);
+    void disconnect ();
+    void reconnect ();
 
-    /** Disconnects from the host. */
-    virtual void disconnect () = 0;
-
-    /** Reconnects to the host. */
-    virtual void reconnect () = 0;
-
-    /**
-    * Sends a request to change the nickname.
-    * \arg nickname The new nickname to be requested.
-    */
-    virtual void sendNicknameChangeRequest (const QString& nickname) = 0;
-
-    /**
-    * Sends a private message.
-    * \arg recipient The nickname or channel that message should be sent to.
-    * \arg message The message that should be sent.
-    */
-    virtual void sendPrivateMessage (const QString& recipient, const QString& message) = 0;
+    void sendNicknameChangeRequest (const QString &nickname);
+    void sendPrivateMessage (const QString &recipient, const QString &message);
 
 signals:
     /**
@@ -173,4 +133,24 @@ signals:
     void userList (const QString& channel, const QStringList& list);
 
     void debugMessage (const QString& message);
+
+private slots:
+    void handleConnected ();
+    void handleDisconnected ();
+    void handleReadyRead ();
+
+private:
+    void handleNicknameChanged (const QString& oldNick, const QString& newNick);
+    void handleUserJoined (const QString& nick, const QString& channel);
+    void handleUserQuit (const QString& nick, const QString& reason);
+    void handleIncomingLine (const QString& line);
+    void sendLine (const QString& line);
+
+    QHostAddress                              m_host;
+    int                                       m_port;
+    QString                                   m_nickname;
+    bool                                      m_connected;
+    bool                                      m_loggedIn;
+    QTcpSocket                                m_tcpSocket;
+    QMap<QString, IRCChannel*>       m_channels;
 };

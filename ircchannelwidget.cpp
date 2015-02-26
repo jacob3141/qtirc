@@ -16,12 +16,12 @@
  */
 
 // Own includes
-#include "ircchannelview.h"
-#include "ui_ircchannelview.h"
+#include "ircchannelwidget.h"
+#include "ui_ircchannelwidget.h"
 
-IRCChannelView::IRCChannelView(IRCChannelProxyInterface *ircChannelProxy, QWidget *parent) :
+IRCChannelWidget::IRCChannelWidget(IRCChannel *ircChannelProxy, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::IRCChannelView)
+    ui(new Ui::IRCChannelWidget)
 {
     ui->setupUi(this);
     m_ircChannelProxy = ircChannelProxy;
@@ -30,17 +30,17 @@ IRCChannelView::IRCChannelView(IRCChannelProxyInterface *ircChannelProxy, QWidge
     ui->usersListView->setModel(m_ircChannelProxy->userListModel());
 }
 
-IRCChannelView::~IRCChannelView()
+IRCChannelWidget::~IRCChannelWidget()
 {
     delete ui;
 }
 
-IRCChannelProxyInterface *IRCChannelView::ircChannelProxy()
+IRCChannel *IRCChannelWidget::ircChannelProxy()
 {
     return m_ircChannelProxy;
 }
 
-void IRCChannelView::scrollToBottom()
+void IRCChannelWidget::scrollToBottom()
 {
     if(ui->chatTextEdit->verticalScrollBar()) {
         ui->chatTextEdit->verticalScrollBar()->setValue(

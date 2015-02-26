@@ -18,22 +18,27 @@
 #pragma once
 
 // Own includes
-#include "ircchannelproxyinterface.h"
+class IRCClient;
 
 // Qt includes
+#include <QObject>
 #include <QVector>
 #include <QColor>
+#include <QTextDocument>
+#include <QStringListModel>
 
 /**
-  * \class IRCChannelProxyImpl
+  * \class IRCChannel
   * Implements a handle to an IRC channel. This is usually provided by the
   * the IRC client class.
   */
-class IRCChannelProxyImpl : public IRCChannelProxyInterface
-{
+class IRCChannel :
+        public QObject {
     Q_OBJECT
 public:
-    IRCChannelProxyImpl(IRCClientInterface *ircClient, const QString& channelName, QObject *parent = 0);
+    IRCChannel(IRCClient *ircClient,
+                        QString channelName,
+                        QObject *parent = 0);
     QTextDocument *conversationModel();
     QStringListModel *userListModel();
     QString channelName();
@@ -56,6 +61,6 @@ private:
     QStringList         m_userList;
     QStringListModel    m_userListModel;
     QTextDocument       m_conversationModel;
-    IRCClientInterface *m_ircClient;
+    IRCClient      *m_ircClient;
     QVector<QColor>     m_colorTable;
 };

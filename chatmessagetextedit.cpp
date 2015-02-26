@@ -24,8 +24,6 @@
 ChatMessageTextEdit::ChatMessageTextEdit (QWidget *parent)
     : QPlainTextEdit (parent), m_completer (new QCompleter())
 {
-    setMaximumHeight (50);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 }
 
 ChatMessageTextEdit::~ChatMessageTextEdit ()

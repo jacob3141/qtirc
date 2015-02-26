@@ -18,28 +18,27 @@
 #pragma once
 
 // Own includes
-#include "ircchannelproxyimpl.h"
+#include "ircchannel.h"
 
 // Qt includes
 #include <QWidget>
 #include <QScrollBar>
 
 namespace Ui {
-    class IRCChannelView;
+    class IRCChannelWidget;
 }
 
-class IRCChannelView : public QWidget
-{
+class IRCChannelWidget : public QWidget {
     Q_OBJECT
 
 public:
-    explicit IRCChannelView(IRCChannelProxyInterface *ircChannelProxy, QWidget *parent = 0);
-    ~IRCChannelView();
+    explicit IRCChannelWidget(IRCChannel *ircChannelProxy, QWidget *parent = 0);
+    ~IRCChannelWidget();
 
     void scrollToBottom();
 
-    IRCChannelProxyInterface *ircChannelProxy();
+    IRCChannel *ircChannelProxy();
 private:
-    Ui::IRCChannelView *ui;
-    IRCChannelProxyInterface *m_ircChannelProxy;
+    Ui::IRCChannelWidget *ui;
+    IRCChannel *m_ircChannelProxy;
 };

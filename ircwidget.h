@@ -18,16 +18,16 @@
 #pragma once
 
 // Own includes
-#include "ircclientimpl.h"
-#include "ircserverview.h"
+#include "ircclient.h"
+#include "ircserverwidget.h"
+#include "chatmessagetextedit.h"
 
 // Qt includes
 #include <QWidget>
 #include <QSet>
-
-namespace Ui {
-    class QIRCWidget;
-}
+#include <QSplitter>
+#include <QTabWidget>
+#include <QPushButton>
 
 class IRCWidget : public QWidget {
     Q_OBJECT
@@ -36,7 +36,11 @@ public:
     explicit IRCWidget(QWidget *parent = 0);
     ~IRCWidget();
 
-    void connectToServer(QString url, QString nick, QString channelAutoJoin = QString());
+    void connectToServer(QString nick,
+                         QString url,
+                         quint16 port = 6667,
+                         QString autoJoinChannel = QString());
+
     void joinChannel(QString channel);
 
 public slots:
@@ -48,9 +52,12 @@ signals:
     void connected();
 
 private:
-    Ui::QIRCWidget *ui;
-    IRCClientInterface *m_ircClient;
-    IRCServerView *m_ircServerView;
-    QSet<IRCChannelProxyInterface*> m_trackedChannels;
-    QString m_channelAutoJoin;
+    QSplitter *             _splitter;
+    QTabWidget *            _tabWidget;
+    QPushButton *           _pushButtonNick;
+    IRCClient *             _ircClient;
+    IRCServerWidget *       _ircServerWidget;
+    ChatMessageTextEdit *   _chatMessageTextEdit;
+    QSet<IRCChannel*>       _channels;
+    QString                 _autoJoinChannel;
 };

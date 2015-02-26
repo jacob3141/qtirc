@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>IRCServerView</class>
- <widget class="QWidget" name="IRCServerView">
+ <class>IRCServerWidget</class>
+ <widget class="QWidget" name="IRCServerWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,8 +17,17 @@
    <property name="spacing">
     <number>2</number>
    </property>
-   <property name="margin">
-    <number>0</number>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
    </property>
    <item>
     <widget class="QTextEdit" name="serverTextEdit">
